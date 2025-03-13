@@ -6,24 +6,14 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import CreateRoom from './components/CreateRoom';
 import Room from './components/Room';
-
-function Home() {
-  return (
-    <div className="max-w-7xl mx-auto p-8">
-      <h2 className="text-3xl font-bold mb-4">Welcome to My App</h2>
-      <p className="text-lg text-gray-700">
-        Explore our features and enjoy the experience!
-      </p>
-    </div>
-  );
-}
+import Home from './components/Home';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
         <Navbar />
-        <main className="mt-8">
+        <main className="mt-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />

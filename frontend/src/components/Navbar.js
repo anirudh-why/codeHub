@@ -27,10 +27,10 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800 p-4 fixed top-0 left-0 w-full z-10 shadow-md">
+    <nav className="bg-black border-b border-gray-800 p-4 fixed top-0 left-0 w-full z-10 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link to="/" className="text-white text-3xl font-bold tracking-wide">CodeHub</Link>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6">
           <Link to="/" className="text-gray-300 hover:text-white transition duration-200">Home</Link>
           
           {user ? (
@@ -47,16 +47,12 @@ function Navbar() {
                   </div>
                 </button>
                 
-                {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <>
-                    {/* Invisible overlay to handle clicking outside */}
                     <div 
                       className="fixed inset-0 z-10"
                       onClick={() => setIsDropdownOpen(false)}
                     />
-                    
-                    {/* Dropdown content */}
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
                       <button
                         onClick={handleSignOut}
@@ -72,9 +68,13 @@ function Navbar() {
           ) : (
             <Link 
               to="/auth" 
-              className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200"
+              className="inline-flex items-center px-6 py-2 text-base font-medium 
+                bg-white text-gray-900 rounded-lg
+                hover:bg-gray-100 transform hover:scale-105 
+                transition-all duration-200 
+                shadow-sm hover:shadow-md"
             >
-              Login
+              <span>Login →</span>
             </Link>
           )}
         </div>

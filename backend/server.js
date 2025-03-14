@@ -5,6 +5,7 @@ const cors = require('cors');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
+const User = require('./models/User');
 
 dotenv.config();
 
@@ -134,6 +135,71 @@ app.get('/api/rooms/:roomId', async (req, res) => {
     res.json(room);
   } catch (error) {
     console.error('Error fetching room:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Create or update user
+app.post('/api/users', async (req, res) => {
+  const { email, displayName, photoURL } = req.body;
+  
+  try {
+    // Try to find existing user
+    let user = await User.findOne({ email });
+    
+    if (user) {
+      // Update existing user's last login
+      user = await User.findOneAndUpdate(
+        { email },
+        { 
+          lastLogin: new Date(),
+          displayName: displayName || user.displayName,
+          photoURL: photoURL || user.photoURL
+        },
+        { new: true }
+      );
+    } else {
+      // Create new user
+      user = new User({
+        email,
+        displayName,
+        photoURL,
+        lastLogin: new Date()
+      });
+      await user.save();
+    }
+    
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error managing user:', error);
+    res.status(500).json({ error: 'Error managing user' });
+  }
+});
+
+// Get user data
+app.get('/api/users/:email', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Add this new route to get rooms by user
+app.get('/api/rooms/user/:email', async (req, res) => {
+  try {
+    const rooms = await Room.find({ 
+      createdBy: req.params.email 
+    }).sort({ createdAt: -1 }); // Sort by creation date, newest first
+    
+    res.json(rooms);
+  } catch (error) {
+    console.error('Error fetching rooms:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

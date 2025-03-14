@@ -3,11 +3,10 @@ import './index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Auth from './components/Auth';
-import CreateRoom from './components/CreateRoom';
-import Room from './components/Room';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './utils/ProtectedRoute';
+import CodeEditor from './components/CodeEditor';
 
 function App() {
   return (
@@ -27,18 +26,10 @@ function App() {
               } 
             />
             <Route 
-              path="/dashboard/create-room" 
+              path="/editor/:roomId" 
               element={
                 <ProtectedRoute>
-                  <CreateRoom />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/room/:roomId" 
-              element={
-                <ProtectedRoute>
-                  <Room />
+                  <CodeEditor />
                 </ProtectedRoute>
               } 
             />

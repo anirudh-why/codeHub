@@ -31,8 +31,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// User model
-const User = require('./models/User');
+// Room model
 const Room = require('./models/Room');
 
 // Socket.IO connection handling
@@ -43,17 +42,14 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     socket.username = username;
     
-    // Get all users in the room
     const users = Array.from(io.sockets.adapter.rooms.get(roomId) || [])
       .map(socketId => {
         const socket = io.sockets.sockets.get(socketId);
         return socket.username;
       });
     
-    // Broadcast updated user list
     io.to(roomId).emit('updateUsers', users);
     
-    // Broadcast join message
     const joinMessage = {
       username: 'System',
       message: `${username} has joined the room`,
@@ -66,7 +62,6 @@ io.on('connection', (socket) => {
     const messageData = { username, message, timestamp: new Date() };
     io.to(roomId).emit('message', messageData);
     
-    // Save message to database
     try {
       await Room.findOneAndUpdate(
         { link: roomId },
@@ -80,7 +75,6 @@ io.on('connection', (socket) => {
   socket.on('codeChange', async ({ roomId, code }) => {
     socket.to(roomId).emit('codeUpdate', code);
     
-    // Save code to database
     try {
       await Room.findOneAndUpdate(
         { link: roomId },
@@ -112,39 +106,14 @@ io.on('connection', (socket) => {
   });
 });
 
-// Sign-up route
-app.post('/api/signup', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = new User({ email, password });
-    await user.save();
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    res.status(400).json({ error: 'Error creating user' });
-  }
-});
-
-// Sign-in route
-app.post('/api/signin', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (user && user.password === password) {
-      res.status(200).json({ message: 'Sign-in successful' });
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (error) {
-    res.status(400).json({ error: 'Error signing in' });
-  }
-});
-
 // Create Room Route
 app.post('/api/rooms', async (req, res) => {
-  const { name } = req.body;
+  const { name, language, createdBy } = req.body;
   try {
     const room = new Room({
       name,
+      language,
+      createdBy,
       link: uuidv4(),
     });
     await room.save();
@@ -155,7 +124,7 @@ app.post('/api/rooms', async (req, res) => {
   }
 });
 
-// Add this route to fetch room data
+// Get room data
 app.get('/api/rooms/:roomId', async (req, res) => {
   try {
     const room = await Room.findOne({ link: req.params.roomId });
@@ -167,11 +136,6 @@ app.get('/api/rooms/:roomId', async (req, res) => {
     console.error('Error fetching room:', error);
     res.status(500).json({ error: 'Server error' });
   }
-});
-
-// Basic route
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
 });
 
 httpServer.listen(PORT, () => {

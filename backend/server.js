@@ -204,6 +204,25 @@ app.get('/api/rooms/user/:email', async (req, res) => {
   }
 });
 
+app.post('/api/rooms/:roomId/addUser', async (req, res) => {
+  const { email, role } = req.body;
+  try {
+    const room = await Room.findById(req.params.roomId);
+    if (!room) return res.status(404).json({ error: 'Room not found' });
+
+    // Check if user already exists
+    const userExists = room.users.find(user => user.email === email);
+    if (userExists) return res.status(400).json({ error: 'User already exists in this room' });
+
+    room.users.push({ email, role });
+    await room.save();
+    res.status(200).json(room);
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }); 

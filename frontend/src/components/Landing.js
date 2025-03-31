@@ -1,7 +1,7 @@
-import { BackgroundLines } from "../components/ui/background-lines";
+import { BackgroundLines } from "./ui/background-lines";
 import { FaCode, FaUsers, FaPlay, FaComments, FaSync, FaGithub } from "react-icons/fa";
 
-function Home() {
+function Landing() {
   return (
     <div className="relative w-full min-h-screen bg-gray-900 text-white">
       {/* Hero Section */}
@@ -60,6 +60,7 @@ function Home() {
   );
 }
 
+
 const features = [
   { icon: FaCode, title: "Live Code Collaboration", description: "Work together in real-time, no setup needed." },
   { icon: FaUsers, title: "Built-in Chat & Video Calls", description: "Discuss code with your team instantly." },
@@ -75,4 +76,6 @@ const steps = [
   { title: "Start Coding Together in Real-Time", description: "Work on projects, debug, and build amazing things!" },
 ];
 
-export default Home;
+export default Landing;
+
+

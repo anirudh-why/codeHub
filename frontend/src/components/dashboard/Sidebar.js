@@ -10,7 +10,7 @@ function Sidebar({ activeTab, setActiveTab, isSidebarOpen, setSidebarOpen }) {
   ];
 
   return (
-    <div className={`fixed top-0 left-0 h-full transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-70' : 'w-20'}`}>
+    <div className={`fixed top-0 left-0 h-full transition-width duration-300 ease-in-out ${isSidebarOpen ? 'w-70' : 'w-20'}`}>
       <div className="h-full bg-black shadow-xl flex flex-col">
         {/* Logo Section */}
         <div className="flex items-center h-16 px-6 border-b border-gray-800">

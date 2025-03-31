@@ -3,7 +3,7 @@ import './index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Auth from './components/Auth';
-import Home from './components/Home';
+import Landing from './components/Landing';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './utils/ProtectedRoute';
 import CodeEditor from './components/CodeEditor';
@@ -15,7 +15,7 @@ function App() {
         <Navbar />
         <main className="mt-16">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route 
               path="/dashboard" 

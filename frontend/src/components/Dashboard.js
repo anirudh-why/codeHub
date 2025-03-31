@@ -4,6 +4,7 @@ import Workspaces from './dashboard/Workspaces';
 import Collaboration from './dashboard/Collaboration';
 import Settings from './dashboard/Settings';
 import Sidebar from './dashboard/Sidebar';
+import { AuroraBackground } from "./ui/aurora-background";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('home');
@@ -25,19 +26,18 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f3f4f6]">
+    <div className=" min-h-screen">
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         isSidebarOpen={isSidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      
-      <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-72' : 'ml-20'}`}>
-        <div className="p-8 mt-8 max-w-7xl mx-auto">
-          {renderContent()}
+        <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[230px]' : 'ml-20'}`}>
+            <AuroraBackground>
+              {renderContent()}
+            </AuroraBackground>
         </div>
-      </div>
     </div>
   );
 }

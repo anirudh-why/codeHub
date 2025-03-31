@@ -27,6 +27,14 @@ const roomSchema = new mongoose.Schema({
     message: String,
     timestamp: Date
   }],
+  users: [{
+    email: String,
+    role: {
+      type: String,
+      enum: ['admin', 'editor', 'viewer'],
+      default: 'viewer'
+    }
+  }]
 }, {
   timestamps: true // This will add createdAt and updatedAt fields
 });

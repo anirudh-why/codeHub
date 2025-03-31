@@ -38,6 +38,10 @@ function CodeEditor() {
       setCollaborators(prev => prev.filter(u => u.id !== userId));
     });
 
+    newSocket.on('chatMessage', (message) => {
+      setChatMessages(prev => [...prev, message]);
+    });
+
     return () => newSocket.disconnect();
   }, [roomId]);
 
@@ -78,8 +82,9 @@ function CodeEditor() {
   const sendMessage = (e) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      socket?.emit('chatMessage', { roomId, message: newMessage });
-      setChatMessages(prev => [...prev, { text: newMessage, sender: 'You' }]);
+      const messageData = { sender: 'You', text: newMessage };
+      socket?.emit('chatMessage', messageData);
+      setChatMessages(prev => [...prev, messageData]);
       setNewMessage('');
     }
   };

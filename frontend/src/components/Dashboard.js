@@ -33,7 +33,7 @@ function Dashboard() {
         isSidebarOpen={isSidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-        <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-[230px]' : 'ml-20'}`}>
+        <div className={`flex-1 mt-9 transition-all duration-300 ${isSidebarOpen ? 'ml-[230px]' : 'ml-20'}`}>
             <AuroraBackground>
               {renderContent()}
             </AuroraBackground>

@@ -1,9 +1,12 @@
 import { BackgroundLines } from "./ui/background-lines";
 import { FaCode, FaUsers, FaPlay, FaComments, FaSync, FaGithub } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function Landing() {
+  const navigate = useNavigate();
+
   return (
-    <div className="relative w-full min-h-screen bg-gray-900 text-white">
+    <div className="relative w-full min-h-screen bg-gray-900 text-white pt-16">
       {/* Hero Section */}
       <BackgroundLines className="flex flex-col items-center justify-center text-center w-full px-4 py-20 z-0">
         <h1 className="text-5xl font-extrabold mb-6 max-w-3xl">
@@ -13,10 +16,16 @@ function Landing() {
           Write, edit, and debug code with your team live. No setup required. Just share a link and start coding.
         </p>
         <div className="flex gap-4">
-          <button className="bg-cyan-500 text-white py-3 px-6 rounded-lg hover:bg-cyan-600 transition">
+          <button 
+            className="bg-cyan-500 text-white py-3 px-6 rounded-lg hover:bg-cyan-600 transition"
+            onClick={() => navigate('/auth')}
+          >
             Start Coding Now
           </button>
-          <button className="border border-white py-3 px-6 rounded-lg hover:bg-white hover:text-gray-900 transition">
+          <button 
+            className="border border-white py-3 px-6 rounded-lg hover:bg-white hover:text-gray-900 transition"
+            onClick={() => navigate('/auth')}
+          >
             Try Demo
           </button>
         </div>
@@ -52,7 +61,10 @@ function Landing() {
       {/* Call to Action */}
       <section className="py-20 text-center">
         <h2 className="text-3xl font-bold mb-6">Get Started for Free!</h2>
-        <button className="bg-cyan-500 text-white py-3 px-6 rounded-lg hover:bg-cyan-600 transition">
+        <button 
+          className="bg-cyan-500 text-white py-3 px-6 rounded-lg hover:bg-cyan-600 transition"
+          onClick={() => navigate('/auth')}
+        >
           Start Coding Now
         </button>
       </section>

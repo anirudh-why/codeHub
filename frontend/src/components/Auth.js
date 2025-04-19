@@ -48,7 +48,7 @@ function Auth() {
   };
 
   return (
-    <BackgroundLines className="flex items-center justify-center w-full flex-col px-4 z-0 min-h-screen">
+    <BackgroundLines className="flex items-center justify-center w-full flex-col px-4 z-0 min-h-[calc(100vh-4rem)] pt-16">
       <div className='max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-gray-800'>
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200 text-center mb-8">Welcome to CodeHub</h2>
         {error && (

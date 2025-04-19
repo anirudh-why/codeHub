@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from '../../firebaseConfig';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -9,6 +10,7 @@ function Home() {
   const [newWorkspaceName, setNewWorkspaceName] = useState('');
   const [newWorkspaceType, setNewWorkspaceType] = useState('javascript');
   const [sessionCode, setSessionCode] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,35 +25,62 @@ function Home() {
 
   const fetchWorkspaces = async (userEmail) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/rooms/user/${userEmail}`);
+      const response = await fetch(`http://localhost:5000/api/dashboard/${userEmail}`);
       if (response.ok) {
         const data = await response.json();
         setWorkspaces(data);
+      } else {
+        console.error('Failed to fetch workspaces');
+        toast.error('Failed to load workspaces');
       }
     } catch (error) {
       console.error('Error fetching workspaces:', error);
+      toast.error('Error connecting to server');
     }
   };
 
   const handleCreateWorkspace = async () => {
+    if (!newWorkspaceName.trim()) {
+      toast.error('Please enter a workspace name');
+      return;
+    }
+    
+    setIsCreating(true);
     try {
-      const response = await fetch('http://localhost:5000/api/rooms', {
+      const response = await fetch('http://localhost:5000/api/workspaces', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json' 
+        },
         body: JSON.stringify({ 
           name: newWorkspaceName,
           language: newWorkspaceType,
-          createdBy: user.email 
+          userEmail: user.email,
+          userName: user.displayName || user.email.split('@')[0],
+          userPhoto: user.photoURL || null
         }),
       });
-      const data = await response.json();
-      if (response.ok) {
-        setShowCreateModal(false);
-        fetchWorkspaces(user.email);
-        navigate(`/editor/${data.link}`);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create workspace');
       }
+      
+      const data = await response.json();
+      toast.success('Workspace created successfully');
+      setShowCreateModal(false);
+      setNewWorkspaceName('');
+      
+      // Update workspaces list
+      fetchWorkspaces(user.email);
+      
+      // Navigate to the new workspace
+      navigate(`/editor/${data.workspace?.link || data.link}`);
     } catch (error) {
       console.error('Error creating workspace:', error);
+      toast.error(error.message || 'Failed to create workspace');
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -205,15 +234,25 @@ function Home() {
               <button
                 className="px-4 py-2 text-gray-300 hover:text-white font-medium transition-colors"
                 onClick={() => setShowCreateModal(false)}
+                disabled={isCreating}
               >
                 Cancel
               </button>
               <button
                 className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 
-                  transform hover:scale-[1.02] transition-all duration-200"
+                  transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center"
                 onClick={handleCreateWorkspace}
+                disabled={isCreating}
               >
-                Create
+                {isCreating ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating...
+                  </>
+                ) : "Create"}
               </button>
             </div>
           </div>
